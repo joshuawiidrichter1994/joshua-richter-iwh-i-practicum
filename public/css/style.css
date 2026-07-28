@@ -1,58 +1,189 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
-body, * {
+* {
+    box-sizing: border-box;
+}
+
+body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 0 1.25rem 2rem;
+    background-color: #f5f8fc;
+    color: #213343;
 }
 
 h1 {
-    margin: 1rem;
+    margin: 0;
 }
 
-.cards {
+a {
+    color: #0b5cff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.page {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.page__header {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 2.5rem 0 1.5rem;
 }
 
-.card {
-    flex-basis: 31%;
-    margin: 1rem 0.4rem;
-    padding: 1rem 0.4rem 2.5rem 0.4rem;
-    border: solid 1px lightgrey;
-    border-radius: 15px;
-    box-shadow: 3px 2px 6px lightgrey;
+.page__header--stacked {
+    align-items: flex-start;
 }
 
-.card__email {
+.eyebrow {
+    margin: 0 0 0.5rem;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #516f90;
+}
+
+.button-link,
+input[type="submit"] {
+    display: inline-block;
+    background-color: #0b5cff;
+    color: #ffffff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.75rem 1.2rem;
     font-size: 1rem;
+    cursor: pointer;
+}
+
+.button-link:hover,
+input[type="submit"]:hover {
+    text-decoration: none;
+    background-color: #0847c7;
+}
+
+.table-card,
+.form-wrapper,
+.empty-state {
+    background-color: #ffffff;
+    padding: 2rem;
+    border: 1px solid #dfe7f0;
+    border-radius: 18px;
+    box-shadow: 0 12px 24px rgba(33, 51, 67, 0.08);
+}
+
+.records-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.records-table th,
+.records-table td {
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 1px solid #dfe7f0;
+}
+
+.records-table th {
+    font-size: 0.95rem;
+    color: #516f90;
+}
+
+.records-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 .form-wrapper {
-    font-size: 18px;
-    max-width: 768px;
-    margin: 2rem auto;
-    padding: 2rem;
-    border: solid 1px lightgrey;
-    border-radius: 15px;
-    box-shadow: 3px 2px 6px lightgrey;
+    font-size: 1.1rem;
 }
 
 label, input {
-    margin-top: 5px;
+    margin-top: 0.5rem;
     display: block;
     font-size: inherit;
 }
 
 input[type="text"] {
-    padding: .25rem;
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid #b6c7d6;
+    border-radius: 10px;
+    background-color: #ffffff;
 }
 
 input[type="submit"] {
-    background-color: lightgrey;
-    border: none;
-    padding: .375rem 1rem;
-    margin-top: 10px;
+    margin-top: 1.5rem;
+}
+
+.form-error {
+    margin: 0 0 1rem;
+    color: #b42318;
+}
+
+.empty-state h2 {
+    margin-top: 0;
+}
+
+@media (max-width: 700px) {
+    body {
+        padding: 0 1rem 2rem;
+    }
+
+    .page__header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .records-table,
+    .records-table thead,
+    .records-table tbody,
+    .records-table th,
+    .records-table td,
+    .records-table tr {
+        display: block;
+    }
+
+    .records-table thead {
+        display: none;
+    }
+
+    .records-table tr {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #dfe7f0;
+    }
+
+    .records-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .records-table td {
+        padding: 0.5rem 0;
+        border-bottom: none;
+    }
+
+    .records-table td::before {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #516f90;
+        margin-bottom: 0.15rem;
+    }
+
+    .records-table td:nth-child(1)::before {
+        content: "Name";
+    }
+
+    .records-table td:nth-child(2)::before {
+        content: "Author";
+    }
+
+    .records-table td:nth-child(3)::before {
+        content: "Genre";
+    }
 }

@@ -1,0 +1,33 @@
+doctype html
+html(lang="en")
+    head
+        title= title
+        meta(charset="utf-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        link(rel="stylesheet", href="/css/style.css")
+    body
+        main.page
+            .page__header
+                div
+                    p.eyebrow HubSpot custom object practicum
+                    h1 Books
+                a.button-link(href="/update-cobj") Add to this table
+
+            if books.length
+                .table-card
+                    table.records-table
+                        thead
+                            tr
+                                th Name
+                                th Author
+                                th Genre
+                        tbody
+                            each book in books
+                                tr
+                                    td= book.name
+                                    td= book.author
+                                    td= book.genre
+            else
+                .empty-state
+                    h2 No book records yet
+                    p Add your first custom object record to see it appear in this table.
