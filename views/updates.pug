@@ -1,0 +1,31 @@
+doctype html
+html(lang="en")
+    head
+        title= title
+        meta(charset="utf-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        link(rel="stylesheet", href="/css/style.css")
+    body
+        main.page
+            .page__header.page__header--stacked
+                div
+                    p.eyebrow HubSpot custom object practicum
+                    h1 Add a Book
+                    p Enter a name, author, and genre to create a new custom object record.
+                a.text-link(href="/") Return to the homepage
+
+            .form-wrapper
+                if errorMessage
+                    p.form-error= errorMessage
+
+                form(action="/update-cobj" method="POST")
+                    label(for="name") Name
+                    input#name(type="text" name="name" value=formValues.name required)
+
+                    label(for="author") Author
+                    input#author(type="text" name="author" value=formValues.author required)
+
+                    label(for="genre") Genre
+                    input#genre(type="text" name="genre" value=formValues.genre required)
+
+                    input(type="submit" value="Create book record")

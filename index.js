@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/public'));
@@ -11,18 +12,92 @@ app.use(express.json());
 
 // * Please DO NOT INCLUDE the private app access token in your repo. Don't do this practicum in your normal account.
 const PRIVATE_APP_ACCESS = process.env.PRIVATE_APP_ACCESS;
+const HUBSPOT_BASE_URL = 'https://api.hubapi.com';
+const CUSTOM_OBJECT_TYPE = '2-65554317';
+const CUSTOM_OBJECT_PROPERTIES = ['name', 'author', 'genre'];
 
-// TODO: ROUTE 1 - Create a new app.get route for the homepage to call your custom object data. Pass this data along to the front-end and create a new pug template in the views folder.
+function getHeaders() {
+    if (!PRIVATE_APP_ACCESS) {
+        throw new Error('Missing PRIVATE_APP_ACCESS environment variable.');
+    }
 
-// * Code for Route 1 goes here
+    return {
+        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
+        'Content-Type': 'application/json'
+    };
+}
 
-// TODO: ROUTE 2 - Create a new app.get route for the form to create or update new custom object data. Send this data along in the next route.
+app.get('/', async (req, res) => {
+    try {
+        const response = await axios.get(`${HUBSPOT_BASE_URL}/crm/v3/objects/${CUSTOM_OBJECT_TYPE}`, {
+            headers: getHeaders(),
+            params: {
+                properties: CUSTOM_OBJECT_PROPERTIES.join(','),
+                limit: 100
+            }
+        });
 
-// * Code for Route 2 goes here
+        const books = response.data.results.map((record) => ({
+            id: record.id,
+            name: record.properties.name || '',
+            author: record.properties.author || '',
+            genre: record.properties.genre || ''
+        }));
 
-// TODO: ROUTE 3 - Create a new app.post route for the custom objects form to create or update your custom object data. Once executed, redirect the user to the homepage.
+        res.render('homepage', {
+            title: 'Books | Integrating With HubSpot I Practicum',
+            books
+        });
+    } catch (error) {
+        console.error('Error retrieving custom object records:', error.response?.data || error.message);
+        res.status(500).send('Unable to load the Books table right now.');
+    }
+});
 
-// * Code for Route 3 goes here
+app.get('/update-cobj', (req, res) => {
+    res.render('updates', {
+        title: 'Update Custom Object Form | Integrating With HubSpot I Practicum',
+        errorMessage: '',
+        formValues: {
+            name: '',
+            author: '',
+            genre: ''
+        }
+    });
+});
+
+app.post('/update-cobj', async (req, res) => {
+    const formValues = {
+        name: req.body.name?.trim() || '',
+        author: req.body.author?.trim() || '',
+        genre: req.body.genre?.trim() || ''
+    };
+
+    if (!formValues.name || !formValues.author || !formValues.genre) {
+        return res.status(400).render('updates', {
+            title: 'Update Custom Object Form | Integrating With HubSpot I Practicum',
+            errorMessage: 'Please complete all three fields before submitting.',
+            formValues
+        });
+    }
+
+    try {
+        await axios.post(`${HUBSPOT_BASE_URL}/crm/v3/objects/${CUSTOM_OBJECT_TYPE}`, {
+            properties: formValues
+        }, {
+            headers: getHeaders()
+        });
+
+        res.redirect('/');
+    } catch (error) {
+        console.error('Error creating custom object record:', error.response?.data || error.message);
+        res.status(500).render('updates', {
+            title: 'Update Custom Object Form | Integrating With HubSpot I Practicum',
+            errorMessage: 'HubSpot could not create the new book record. Please try again.',
+            formValues
+        });
+    }
+});
 
 /** 
 * * This is sample code to give you a reference for how you should structure your calls. 
@@ -70,4 +145,4 @@ app.post('/update', async (req, res) => {
 
 
 // * Localhost
-app.listen(3000, () => console.log('Listening on http://localhost:3000'));
+app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));
